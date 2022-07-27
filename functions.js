@@ -65,7 +65,7 @@ export const npmInstall = (dir, pkgs = [], projectName = null) => {
     const logFile = dir + "/install.log";
     let params = getParamsFromDependencies(pkgs);
     process.stdout.write(`Installing ${params.join(' ')} to ${projectName ?? dir}`);
-    const cmd = spawnSync( 'npm', [ '--loglevel=error', '--no-update-notifier', 'install', '--prefix', dir, ...params ] );
+    const cmd = spawnSync( 'npm', [ '--loglevel=error', '--no-update-notifier', '--legacy-peer-deps', 'install', '--prefix', dir, ...params ] );
     if(cmd.status === 1){
         process.stdout.write(` | Error \nOutput saved to: ${errorFile}\n\n`);
         fs.writeFileSync(errorFile, cmd.stderr.toString())
@@ -103,7 +103,7 @@ export const deploy = (dir, site, environment) => {
     const errorFile = dir + "/deploy-error.log";
     const logFile = dir + "/deploy.log";
     process.stdout.write(`\nDeploying ${dir}`);
-    const cmd = spawnSync( 'npx', [ '--loglevel=error', '--no-update-notifier', 'run', 'layer0', 'deploy', `--site=${site}`, `--environment=${environment}`], {
+    const cmd = spawnSync( 'npx', [ '--loglevel=error', '--no-update-notifier', 'layer0', 'deploy', `--site=${site}`, `--environment=${environment}`], {
         cwd: dir
     });
     if(cmd.status === 1){
@@ -118,6 +118,7 @@ export const deploy = (dir, site, environment) => {
         fs.writeFileSync(logFile, cmd.stdout.toString());
         return true;
     }
+    fs.writeFileSync(logFile, cmd.stdout.toString());
     return false;
 }
 

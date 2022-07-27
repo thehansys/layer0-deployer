@@ -11,6 +11,9 @@ import {
 
 
 const directories = getDirectories("../");
+const packagesToSkip = [
+    "@layer0/rum"
+];
 const packageSearchterm = "@layer0";
 const packageVersion = "4.17.1-next-1658839841-109668f53.0";
 
@@ -22,7 +25,7 @@ directories.forEach((dir, i) => {
         const packageJson = getPackageJson(dir);
         const projectName = packageJson.name;
         const dependencies = getDependencies(packageJson, packageSearchterm);
-        let dependenciesForUpdate = dependencies.filter(dep => dep.version !== packageVersion)
+        let dependenciesForUpdate = dependencies.filter(dep => dep.version !== packageVersion && !packagesToSkip.includes(dep.name))
         let dependenciesForInstall = dependenciesForUpdate.map(dep => {
             return {
                 ...dep,
