@@ -144,7 +144,6 @@ export const isDeployed = (dir) => {
     return false;
 }
 
-
 export const setDeployed = (dir, status) => {
     try {
         if (!status && fs.existsSync(dir + "/" + __deployedFilename)) {
