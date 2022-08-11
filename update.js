@@ -15,7 +15,7 @@ const packagesToSkip = [
     "@layer0/rum"
 ];
 const packageSearchterm = "@layer0";
-const packageVersion = "4.17.1-next-1658839841-109668f53.0";
+const packageVersion = "4.18.0";
 
 let failedProjects = [];
 

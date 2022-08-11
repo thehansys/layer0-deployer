@@ -7,6 +7,7 @@ import process from 'process';
 
 export const __filename = url.fileURLToPath(import.meta.url);
 export const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+export const __parentDirname = path.resolve(__dirname, '..')
 export const __deployedFilename = "deployed.txt";
 export const __buildFilename = "built.txt";
 
@@ -60,6 +61,18 @@ export const getParamsFromDependencies = pkgs => {
     });
 }
 
+export const gitClone = (repo) => {
+    const cmd = spawnSync( 'git', [ 'clone', repo ] );
+    if(cmd.status === 1){
+        process.stdout.write(" |Error\n")
+        return false;
+    }
+    if(cmd.status === 0){
+        process.stdout.write(" | Success\n");
+    }
+    return true;
+}
+
 export const npmInstall = (dir, pkgs = [], projectName = null) => {
     const errorFile = dir + "/install-error.log";
     const logFile = dir + "/install.log";
@@ -103,7 +116,7 @@ export const deploy = (dir, site, environment) => {
     const errorFile = dir + "/deploy-error.log";
     const logFile = dir + "/deploy.log";
     process.stdout.write(`\nDeploying ${dir}`);
-    const cmd = spawnSync( 'npx', [ '--loglevel=error', '--no-update-notifier', 'layer0', 'deploy', `--site=${site}`, `--environment=${environment}`], {
+    const cmd = spawnSync( 'npx', [ '--loglevel=error', 'layer0', 'deploy', `--site=${site}`, `--environment=${environment}`], {
         cwd: dir
     });
     if(cmd.status === 1){
