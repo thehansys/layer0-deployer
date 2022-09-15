@@ -79,14 +79,17 @@ export const npmInstall = (dir, pkgs = [], projectName = null) => {
     let params = getParamsFromDependencies(pkgs);
     process.stdout.write(`Installing ${params.join(' ')} to ${projectName ?? dir}`);
     const cmd = spawn( 'npm', [ '--loglevel=error', '--no-update-notifier', '--legacy-peer-deps', 'install', '--prefix', dir, ...params ] );
-
-    cmd.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
-    });
-
-    cmd.on('close', (code) => {
-        console.log(`Process exited`);
-    });
+    if(cmd.status === 1){
+        process.stdout.write(` | Error \nOutput saved to: ${errorFile}\n\n`);
+        fs.writeFileSync(errorFile, cmd.stderr.toString())
+        fs.writeFileSync(logFile, cmd.stdout.toString())
+        return false;
+    }
+    if(cmd.status === 0){
+        //process.stdout.write(cmd.stdout.toString());
+        process.stdout.write(" | Success\n\n");
+        fs.writeFileSync(logFile, cmd.stdout.toString())
+    }
     return true;
 }
 
