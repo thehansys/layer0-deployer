@@ -87,18 +87,6 @@ export const npmInstall = (dir, pkgs = [], projectName = null) => {
     cmd.on('close', (code) => {
         console.log(`Process exited`);
     });
-
-    if(cmd.status === 1){
-        process.stdout.write(` | Error \nOutput saved to: ${errorFile}\n\n`);
-        fs.writeFileSync(errorFile, cmd.stderr.toString())
-        fs.writeFileSync(logFile, cmd.stdout.toString())
-        return false;
-    }
-    if(cmd.status === 0){
-        //process.stdout.write(cmd.stdout.toString());
-        process.stdout.write(" | Success\n\n");
-        fs.writeFileSync(logFile, cmd.stdout.toString())
-    }
     return true;
 }
 
