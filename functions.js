@@ -84,7 +84,6 @@ export const npmInstall = (dir, pkgs = [], projectName = null) => {
         console.error(`stderr: ${data}`);
     });
 
-
     cmd.on('close', (code) => {
         console.log(`Process exited`);
     });
@@ -114,9 +113,20 @@ export const deploy = (dir, site, environment) => {
     const errorFile = dir + "/deploy-error.log";
     const logFile = dir + "/deploy.log";
     process.stdout.write(`\nDeploying ${dir}`);
-    const cmd = spawnSync( 'npx', [ '--loglevel=error', 'layer0', 'deploy', `--site=${site}`, `--environment=${environment}`], {
+    const cmd = spawn( 'npx', [ '--loglevel=error', 'layer0', 'deploy', `--site=${site}`, `--environment=${environment}`], {
         cwd: dir
     });
+
+    cmd.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+
+    cmd.on('close', (code) => {
+        console.log(`Process exited`);
+    });
+
+    /*
     if(cmd.status === 1){
         process.stdout.write(` | Error \nOutput saved to: ${errorFile}\n\n`);
         fs.writeFileSync(errorFile, cmd.stderr.toString())
@@ -130,6 +140,8 @@ export const deploy = (dir, site, environment) => {
         return true;
     }
     fs.writeFileSync(logFile, cmd.stdout.toString());
+
+     */
     return false;
 }
 
