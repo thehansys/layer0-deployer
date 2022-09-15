@@ -84,6 +84,7 @@ export const npmInstall = (dir, pkgs = [], projectName = null) => {
         console.error(`stderr: ${data}`);
     });
 
+
     cmd.on('close', (code) => {
         console.log(`Process exited`);
     });
