@@ -97,18 +97,7 @@ export const npmBuild = (dir, projectName = null) => {
     const errorFile = dir + "/build-error.log";
     const logFile = dir + "/build.log";
     process.stdout.write(`Building ${projectName ?? dir}`);
-    const cmd = spawnSync( 'npm', [ '--loglevel=error', '--no-update-notifier', 'run', 'build', '--prefix', dir] );
-    if(cmd.status === 1){
-        process.stdout.write(` | Error \nOutput saved to: ${errorFile}\n\n`);
-        fs.writeFileSync(errorFile, cmd.stderr.toString())
-        fs.writeFileSync(logFile, cmd.stdout.toString())
-        return false;
-    }
-    if(cmd.status === 0){
-        //process.stdout.write(cmd.stdout.toString());
-        process.stdout.write(" | Success\n\n");
-        fs.writeFileSync(logFile, cmd.stdout.toString())
-    }
+    const cmd = spawn( 'npm', [ '--loglevel=error', '--no-update-notifier', 'run', 'build', '--prefix', dir] );
     return true;
 }
 
