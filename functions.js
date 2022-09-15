@@ -78,7 +78,16 @@ export const npmInstall = (dir, pkgs = [], projectName = null) => {
     const logFile = dir + "/install.log";
     let params = getParamsFromDependencies(pkgs);
     process.stdout.write(`Installing ${params.join(' ')} to ${projectName ?? dir}`);
-    const cmd = spawnSync( 'npm', [ '--loglevel=error', '--no-update-notifier', '--legacy-peer-deps', 'install', '--prefix', dir, ...params ] );
+    const cmd = spawn( 'npm', [ '--loglevel=error', '--no-update-notifier', '--legacy-peer-deps', 'install', '--prefix', dir, ...params ] );
+
+    cmd.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    cmd.on('close', (code) => {
+        console.log(`Process exited`);
+    });
+
     if(cmd.status === 1){
         process.stdout.write(` | Error \nOutput saved to: ${errorFile}\n\n`);
         fs.writeFileSync(errorFile, cmd.stderr.toString())
